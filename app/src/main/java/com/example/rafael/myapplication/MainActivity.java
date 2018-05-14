@@ -8,20 +8,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.rafael.myapplication.dao.AlunoDAO;
+import com.example.rafael.myapplication.modelo.Aluno;
+
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //array da lista de alunos
-        String [] alunos = {"Rafael", "Lucas", "Gabriel", "João"};
-
-        //método que instancia a ListView
-        ListView listaAlunos = (ListView) findViewById(R.id.lista_alunos);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, alunos);
-        listaAlunos.setAdapter(adapter);
+        //método que carrega a lista do BD
+        carregaLista();
 
         //botão que abre a view de Formulário
         Button novoAluno = (Button) findViewById(R.id.novo_aluno);
@@ -32,5 +31,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intentMainToForm);
             }
         });
+    }
+
+    private void carregaLista() {
+        //instância do objeto DAO
+        AlunoDAO dao = new AlunoDAO(this);
+
+        //método que busca os alunos do DB
+        List<Aluno> alunos = dao.buscaAlunos();
+        dao.close();//fecha conexão com o DB
+
+        //método que instancia a ListView
+        ListView listaAlunos = (ListView) findViewById(R.id.lista_alunos);
+        ArrayAdapter<Aluno> adapter = new ArrayAdapter<Aluno>(this, android.R.layout.simple_list_item_1, alunos);
+        listaAlunos.setAdapter(adapter);
     }
 }
