@@ -1,6 +1,8 @@
 package com.example.rafael.myapplication.modelo;
 
-public class Aluno {
+import java.io.Serializable;
+
+public class Aluno implements Serializable{
 
     //atributos da classe Aluno
     private Long id;

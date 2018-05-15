@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 import com.example.rafael.myapplication.modelo.Aluno;
 
@@ -33,11 +34,8 @@ public class AlunoDAO extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    //método que insere os dados dos inputs na tabela
-    public void insere(Aluno aluno) {
-        //método do SQLite que escreve os dados na tabela (Previne SQL Injection)
-        SQLiteDatabase db = getWritableDatabase();
-
+    @NonNull
+    private ContentValues getDadosAluno(Aluno aluno) {
         //instância do objeto ContentValues
         ContentValues dados = new ContentValues();
 
@@ -47,9 +45,7 @@ public class AlunoDAO extends SQLiteOpenHelper{
         dados.put("telefone", aluno.getTelefone());
         dados.put("site", aluno.getSite());
         dados.put("nota", aluno.getNota());
-
-        //insere de fato os valores, salvos anteriormente, na tabela
-        db.insert("Alunos", null, dados);
+        return dados;
     }
 
     public List<Aluno> buscaAlunos() {
@@ -84,5 +80,41 @@ public class AlunoDAO extends SQLiteOpenHelper{
         c.close();//fecha o cursor
 
         return alunos;
+    }
+
+    //método que insere os dados dos inputs na tabela
+    public void insere(Aluno aluno) {
+        //método do SQLite que escreve os dados na tabela (Previne SQL Injection)
+        SQLiteDatabase db = getWritableDatabase();
+
+        //Pega os dados do aluno
+        ContentValues dados = getDadosAluno(aluno);
+
+        //insere de fato os valores, salvos anteriormente, na tabela
+        db.insert("Alunos", null, dados);
+    }
+
+    public void deleta(Aluno aluno) {
+        //método do SQLite que escreve os dados na tabela (Previne SQL Injection)
+        SQLiteDatabase db = getWritableDatabase();
+
+        //Array de strings que serão os parâmetros para deleção
+        String [] params = {aluno.getId().toString()};
+
+        //deleta de fato o aluno selecionado da tabela
+        db.delete("Alunos", "id = ?", params);
+    }
+
+    public void edita(Aluno aluno) {
+        //método do SQLite que escreve os dados na tabela (Previne SQL Injection)
+        SQLiteDatabase db = getWritableDatabase();
+
+        //instância do objeto ContentValues
+        ContentValues dados = getDadosAluno(aluno);
+
+        //Array de strngs que serão os parâmetros para update
+        String [] params = {aluno.getId().toString()};
+
+        db.update("Alunos", dados, "id = ?", params);
     }
 }

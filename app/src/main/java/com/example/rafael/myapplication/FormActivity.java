@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.rafael.myapplication.dao.AlunoDAO;
@@ -25,6 +22,14 @@ public class FormActivity extends AppCompatActivity {
 
         //instância do objeto FormHelper
         helper = new FormHelper(this);
+
+        //Pega a intent do click na lista
+        Intent intent = getIntent();
+        Aluno aluno = (Aluno)intent.getSerializableExtra("aluno");
+
+        if (aluno != null){
+            helper.preencheForm(aluno);
+        }
 
     }
 
@@ -54,8 +59,15 @@ public class FormActivity extends AppCompatActivity {
                 //instância do objeto AlunoDAO
                 AlunoDAO dao = new AlunoDAO(this);
 
-                //método do objeto AlunoDAO que insere no banco de dados os inputs
-                dao.insere(aluno);
+                if(aluno.getId() != null){
+                    //método do objeto AlunoDAo que edita no banco de dados os inputs
+                    dao.edita(aluno);
+                } else{
+                    //método do objeto AlunoDAO que insere no banco de dados os inputs
+                    dao.insere(aluno);
+                }
+
+
 
                 //fecha a conexão com o banco de dados
                 dao.close();
