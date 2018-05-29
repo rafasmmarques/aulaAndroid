@@ -16,22 +16,24 @@ public class AlunoDAO extends SQLiteOpenHelper{
 
     //contrutor da DAO
     public AlunoDAO(Context context){
-        super(context, "Agenda", null, 1);
+        super(context, "Agenda", null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         //SQL para criar a tabela se ela nao existir
-        String sql = "CREATE TABLE Alunos(id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone TEXT, site TEXT, nota DOUBLE);";
+        String sql = "CREATE TABLE Alunos(id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone TEXT, site TEXT, nota DOUBLE, foto TEXT);";
         db.execSQL(sql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         //SQL para deletar a tabela
-        String sql = "DROP TABLE IF EXISTS Alunos;";
-        db.execSQL(sql);
-        onCreate(db);
+        switch (oldVersion){
+            case 1:
+                String sql = "ALTER TABLE Alunos ADD COLUMN foto TEXT;";
+                db.execSQL(sql);
+        }
     }
 
     @NonNull
@@ -45,6 +47,7 @@ public class AlunoDAO extends SQLiteOpenHelper{
         dados.put("telefone", aluno.getTelefone());
         dados.put("site", aluno.getSite());
         dados.put("nota", aluno.getNota());
+        dados.put("foto", aluno.getCaminhoFoto());
         return dados;
     }
 
@@ -73,6 +76,7 @@ public class AlunoDAO extends SQLiteOpenHelper{
             aluno.setTelefone(c.getString(c.getColumnIndex("telefone")));
             aluno.setSite(c.getString(c.getColumnIndex("site")));
             aluno.setNota(c.getDouble(c.getColumnIndex("nota")));
+            aluno.setCaminhoFoto(c.getString(c.getColumnIndex("foto")));
 
             //Adiciona no objeto aluno os campos lidos
             alunos.add(aluno);

@@ -11,6 +11,7 @@ public class Aluno implements Serializable{
     private String telefone;
     private String site;
     private Double nota;
+    private String caminhoFoto;
 
     //Getters e Setters dos atributos
     public Long getId() {
@@ -59,6 +60,14 @@ public class Aluno implements Serializable{
 
     public void setNota(Double nota) {
         this.nota = nota;
+    }
+
+    public String getCaminhoFoto() {
+        return caminhoFoto;
+    }
+
+    public void setCaminhoFoto(String caminhoFoto) {
+        this.caminhoFoto = caminhoFoto;
     }
 
     //Converte o objeto devolvido em String

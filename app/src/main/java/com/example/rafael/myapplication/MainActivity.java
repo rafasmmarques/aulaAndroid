@@ -1,7 +1,10 @@
 package com.example.rafael.myapplication;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -94,6 +97,29 @@ public class MainActivity extends AppCompatActivity {
 
         //item "Mapa" do menu do contexto
         MenuItem itemMapa = menu.add("Visualizar Endereço");
+
+        //item "Telefone" do menu do contexto
+        MenuItem itemTel = menu.add("Ligar para " + ((Aluno) listaAlunos.getItemAtPosition(info.position)).getNome());
+
+        //Listener do item "Telefone"
+        itemTel.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                //Checa se não tem permissão
+                if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 123);
+                }
+                //se já tem, inicia a Intent
+                else{
+                    //Intent para ligar para o Aluno quando clicado
+                    Intent intentTel = new Intent(Intent.ACTION_CALL);
+                    intentTel.setData(Uri.parse("tel:" + aluno.getTelefone()));
+                    startActivity(intentTel);
+
+                }
+                return false;
+            }
+        });
 
         //Checa se o site tem o protocolo http junto, se não, adiciona
         String site = aluno.getSite();

@@ -1,19 +1,32 @@
 package com.example.rafael.myapplication;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.rafael.myapplication.dao.AlunoDAO;
 import com.example.rafael.myapplication.modelo.Aluno;
 
+import java.io.File;
+
 public class FormActivity extends AppCompatActivity {
 
+    //atributos da classe
     private FormHelper helper;
+    private String caminhoFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +44,32 @@ public class FormActivity extends AppCompatActivity {
             helper.preencheForm(aluno);
         }
 
+        //Botão para tirar foto do perfil
+        Button btnFoto = (Button) findViewById(R.id.form_btn_foto);
+        btnFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent para abrir a câmera
+                Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                //caminho de diretório onde irá salvar a foto (usando Current Millis como nome da foto)
+                caminhoFoto = getExternalFilesDir(null) + "/" + System.currentTimeMillis() + ".jpg";
+
+                //instancia o objeto File (passando o caminho como parâmetro)
+                File arquivoFoto = new File(caminhoFoto);
+
+                //A PARTIR DO ANDROID 7 É NECESSÁRIO USAR O FILE PROVIDER PARA LIDAR COM ARQUIVOS
+                intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(FormActivity.this,BuildConfig.APPLICATION_ID + ".provider", arquivoFoto));
+                startActivityForResult(intentCamera, 456);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if ((requestCode == 456) && (resultCode == Activity.RESULT_OK)) {
+            helper.carregaImagem(caminhoFoto);
+        }
     }
 
     //Menu superior
@@ -66,8 +105,6 @@ public class FormActivity extends AppCompatActivity {
                     //método do objeto AlunoDAO que insere no banco de dados os inputs
                     dao.insere(aluno);
                 }
-
-
 
                 //fecha a conexão com o banco de dados
                 dao.close();
