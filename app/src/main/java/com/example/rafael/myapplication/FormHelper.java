@@ -55,10 +55,13 @@ public class FormHelper {
         if (caminhoFoto != null){
             Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
             Bitmap bitmapReduzido = bitmap.createScaledBitmap(bitmap, 150, 150, true);
+
             //Salva a foto no perfil do aluno
             campoFoto.setImageBitmap(bitmapReduzido);
+
             //Redimensiona a foto na tela
             campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+
             //Seta uma tag para o caminho da foto
             campoFoto.setTag(caminhoFoto);
         }

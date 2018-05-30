@@ -15,6 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+
+import com.example.rafael.myapplication.adapter.AlunosAdapter;
 import com.example.rafael.myapplication.dao.AlunoDAO;
 import com.example.rafael.myapplication.modelo.Aluno;
 
@@ -68,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
         List<Aluno> alunos = dao.buscaAlunos();
         dao.close();//fecha conexão com o DB
 
-        ArrayAdapter<Aluno> adapter = new ArrayAdapter<Aluno>(this, android.R.layout.simple_list_item_1, alunos);
+        //instância do adapter
+        AlunosAdapter adapter = new AlunosAdapter(this, alunos);
         listaAlunos.setAdapter(adapter);
     }//end carregaLista
 //-----------------------------------------------------------------------------------------------------------------
